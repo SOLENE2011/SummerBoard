@@ -6,6 +6,8 @@
 <sqlMap namespace="board">
 	<typeAlias alias="BoardModel" type="net.nice19.smboard.board.model.BoardModel"/>
 	<typeAlias alias="BoardCommentModel" type="net.nice19.smboard.board.model.BoardCommentModel" />
+	
+	<!-- parameterClass="java.util.HashMap" Map 가장 효율적 #이름#으로 값이 들어감!-->
 	<select id="getBoardList" parameterClass="java.util.HashMap" resultClass="BoardModel">
 		select 
 			b.idx, b.writer, b.subject, 
@@ -31,6 +33,35 @@
 								b.writedate, b.rnum, b.writerId, b.fileName 
 							order by b.idx desc
 	</select>
+	
+	<!-- 
+	
+	1.
+	
+					from (select 
+							idx, writer, subject, 
+							content, hitcount, recommendcount, 
+							writedate, writerId, fileName 
+							from jmboard 
+							order by idx desc) a 
+							
+							* a: 테이블의 별칭
+							
+	2.
+	
+			from (select 
+					a.idx, a.writer, a.subject, 
+					a.content, a.hitcount, a.recommendcount, 
+					a.writedate, a.writerId, a.fileName, rownum rnum 
+				from (select 
+							idx, writer, subject, 
+							content, hitcount, recommendcount, 
+							writedate, writerId, fileName 
+							from jmboard 
+							order by idx desc) a 
+						) b
+						* b: 테이블의 별칭
+	 -->
 	
 	<select id="getTotalNum" resultClass="int">
 		select count(idx) from jmboard

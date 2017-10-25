@@ -5,6 +5,7 @@
     
 <sqlMap namespace="login">
 	<typeAlias alias="LoginModel" type="net.nice19.smboard.login.model.LoginSessionModel" />
+	<!-- String으로 받아서 실행함. 그리고 자바빈으로 return -->
 	<select id="loginCheck" parameterClass="String" resultClass="LoginModel">
 		select idx, userId, userPw, userName, joinDate 
 		from JMBoard_Member 

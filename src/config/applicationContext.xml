@@ -7,15 +7,18 @@
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-	
-	  <!-- iBatis -->
+		
+		<!-- spring에서 ibatis 연동 작업 -->
+	  <!-- iBatis 관련된 DB logic 설정-->
 	  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 	  	<property name="locations" value="classpath:config/dbconn.properties" />
+	  	<!-- applicationContext.xml 에서 내가 만든 dbconn.properties 쓰겠다 설정함.  -->
 	  </bean>
 	  
+	  <!-- sqlMapConfig.xml과는 다르게 spring은 spring대로 db설정 한번 더 해줘야함 -->
 	  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 	  	<property name="driverClassName" value="${jdbc.driver}" />
-	  	<property name="url" value="${jdbc.url" />
+	  	<property name="url" value="${jdbc.url}" />
 	  	<property name="username" value="${jdbc.username}" />
 	  	<property name="password" value="${jdbc.password}" />
 	  </bean>
@@ -26,6 +29,7 @@
     		<property name="configLocation" value="classpath:/config/sqlMapConfig.xml" />	
     	</bean>
     	
+    	<!-- 이 객체를 얻어내고 ibatis의 정의 한 내용을 끌어다 작업할 수 있다. -->
     	<bean id="sqlMapClientTemplate" 
     		class="org.springframework.orm.ibatis.SqlMapClientTemplate">
     		<property name="sqlMapClient" ref="sqlMapClient" />	
@@ -40,8 +44,8 @@
        		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
        	</bean>
        	
-       	<bean id="boardService" class="net.nice19.smboard.board.service.BoardService">
+       <!-- 	<bean id="boardService" class="net.nice19.smboard.board.service.BoardService">
        		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
-       	</bean>
+       	</bean> -->
   
   </beans>

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- 전반에 대한 설정 -->
+<!-- applicationContext.xml db설정-->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,9 +17,9 @@
    			
    		<bean id="memberController" 
    			class="net.nice19.smboard.member.controller.MemberController" />
-   			
+<!--   			
    		<bean id="boardController" 
-   			class="net.nice19.smboard.board.controller.BoardController" />	
+   			class="net.nice19.smboard.board.controller.BoardController" />	 -->
 
     <!-- viewResolver -->
     	<bean id="viewResolver" 

@@ -3,6 +3,7 @@
     PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
     "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
     
+    <!-- ibatis 단독으로 쓸때는 이것이 필요해서 따로 설정 -->
 <sqlMapConfig>
 	<settings useStatementNamespaces="true" />
 	<transactionManager type="JDBC" commitRequired="false">
@@ -11,13 +12,14 @@
 				value="oracle.jdbc.driver.OracleDriver" />
 			<property name="JDBC.ConnectionURL" 
 				value="jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL" />
-			<property name="JDBC.Username" value="KH21" />
+			<property name="JDBC.Username" value="KH07" />
 			<property name="JDBC.Password" value="oracle" />
 		</dataSource>
 	</transactionManager>
 	
+
+	<!-- 	<sqlMap resource="net/nice19/smboard/ibatis/board.xml" /> -->
 	<sqlMap resource="net/nice19/smboard/ibatis/member.xml" />
-	<sqlMap resource="net/nice19/smboard/ibatis/board.xml" />
 	<sqlMap resource="net/nice19/smboard/ibatis/login.xml" />
 	
 </sqlMapConfig>

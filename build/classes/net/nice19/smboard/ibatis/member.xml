@@ -7,22 +7,18 @@
 	<typeAlias alias="MemberModel" type="net.nice19.smboard.member.model.MemberModel" />
 	
 	<select id="selectOneMember" parameterClass="int" resultClass="MemberModel">
-		select idx, userId, userPw, userName, joinDate 
-		from JMBoard_Member 
-		where idx = #idx#
+		select idx, userId, userPw, userName, joinDate from JMBoard_Member where idx = #idx#
 	</select>
 	
 	<select id="selectAllMember" resultClass="MemberModel">
-		select idx, userId, userPw, userName, joinDate 
-		from JMBoard_Member
+		select idx, userId, userPw, userName, joinDate from JMBoard_Member
 	</select>
 	
 	<select id="findByUserId" parameterClass="String" resultClass="MemberModel">
-		select idx, userId, userPw, userName, joinDate 
-		from JMBoard_Member 
-		where userId = #userId#
+		select idx, userId, userPw, userName, joinDate from JMBoard_Member where userId = #userId#
 	</select>
 	
+	<!-- 자바빈을 받아서 실행함! -->
 	<insert id="addMember" parameterClass="MemberModel">
 		insert into JMBoard_Member(idx, userId, userPw, userName, joinDate) 
 		values(MEMBERSEQ.nextVal, #userId#, #userPw#, #userName#, sysdate)

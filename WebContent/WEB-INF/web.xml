@@ -15,7 +15,10 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 
-	<!-- filter declared -->
+	<!-- filter declared 
+	client에서 server로 전송할때 Encoding 
+	post방식만 UTF-8로 잡음 GET은 server.xml에서 설정함
+	-->
 	<filter>
 		<filter-name>encodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
