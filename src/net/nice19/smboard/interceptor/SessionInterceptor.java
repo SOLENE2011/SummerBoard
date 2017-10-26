@@ -10,7 +10,7 @@ public class SessionInterceptor extends HandlerInterceptorAdapter{
  
 @Override
 
-//요청이 Contoller 가기전에 잡아챔.
+//요청이 Contoller 가기전에 잡아챔. 세션이 있는지 없는지 체크!
 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) 
 	throws Exception {
 	// check variable

@@ -167,10 +167,8 @@ public class BoardController {
 	public ModelAndView boardView(HttpServletRequest request) {
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		BoardModel board = boardService.getOneArticle(idx);
-		// get selected article model
 		// 1.한줄 짜리 데이터를 가져와야함
 		boardService.updateHitcount(board.getHitcount()+1, idx);
-		// update hitcount
 		// 2.그리고 조회수 1을 증가시켜야함.
 		List<BoardCommentModel> commentList = boardService.getCommentList(idx);
 		// get comment list 댓글 리스트도 뽑아옴
@@ -194,14 +192,19 @@ public class BoardController {
 		MultipartFile file = request.getFile("file");
 		String fileName = file.getOriginalFilename();
 		File uploadFile = new File(uploadPath + fileName);
-		// when file exists as same name
+		//private String uploadPath = "C:\\Java\\App\\SummerBoard\\WebContent\\files\\";
+		
+		// 같은 이름의 파일이 존재할때!
 		if(uploadFile.exists()) {
 			fileName = new Date().getTime() + fileName;
 			uploadFile = new File(uploadPath + fileName);
 		}
-		// save upload file to uploadPath
+		
 		try {
 			file.transferTo(uploadFile);
+			 // jsp에서 업로드한 file의 데이터를
+			 // "C:\\Java\\App\\SummerBoard\\WebContent\\files\\fileName" 경로에
+			 // 생성한 uploadFile에 파일 데이터를 저장한다
 		} catch (Exception e) {
 			
 		}
@@ -234,6 +237,7 @@ public class BoardController {
 
 	@RequestMapping("/modify.do")
 	public ModelAndView boardModify(HttpServletRequest request, HttpSession session) {
+		// 남이 내꺼를 수정하면 안돼니깐 HttpSession session으로 본인 여부 확인
 		String userId = (String) session.getAttribute("userId");
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		
@@ -298,6 +302,7 @@ public class BoardController {
 	
 	@RequestMapping("delete.do")
 	public ModelAndView boardDelete(HttpServletRequest request, HttpSession session) {
+		// 남이 내꺼를 삭제하면 안돼니깐 HttpSession session으로 본인 여부 확인
 		String userId = (String) session.getAttribute("userId");
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		
@@ -335,6 +340,7 @@ public class BoardController {
 	
 	@RequestMapping("/commentDelete.do")
 	public ModelAndView commendDelete(HttpServletRequest request, HttpSession session) {
+		// 남이 내꺼를 수정하면 안돼니깐 HttpSession session으로 본인 여부 확인
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		int linkedArticleNum = Integer.parseInt(request.getParameter("linkedArticleNum"));
 		
@@ -358,6 +364,7 @@ public class BoardController {
 	
 	@RequestMapping("/recommend.do")
 	public ModelAndView updateRecommendcount(HttpServletRequest request, HttpSession session) {
+		// 본인은 본인의 글을 추천하지 못하게 하기 위해 session 검
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		String userId = (String) session.getAttribute("userId");
 		BoardModel board = boardService.getOneArticle(idx);

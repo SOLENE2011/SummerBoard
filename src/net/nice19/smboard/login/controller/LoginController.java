@@ -58,6 +58,7 @@ public class LoginController {
 
 		// check password
 		if (loginCheckResult.getUserPw().equals(userPw)) {
+			// session에 올리는 작업
 			session.setAttribute("userId", userId);
 			session.setAttribute("userName", loginCheckResult.getUserName());
 			mav.setViewName("redirect:/board/list.do");

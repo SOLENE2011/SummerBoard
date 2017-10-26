@@ -2,17 +2,17 @@ package net.nice19.smboard.board.model;
 
 public class BoardModel {
 
-	private int rnum;
-	private int idx;
-	private String writer;
-	private String subject;
-	private String content;
-	private int hitcount = 0;
-	private int recommendcount;
-	private int comment = 0;
-	private String writeDate;
-	private String writerId;
-	private String fileName;
+	private int rnum; // 조건에맞는
+	private int idx; //SEQ.
+	private String writer; //글쓴이
+	private String subject; //제목
+	private String content; //내용
+	private int hitcount = 0; //조회수
+	private int recommendcount = 0; //추천수
+	private int comment = 0; //코멘트
+	private String writeDate; //쓴날짜
+	private String writerId; // 글쓴이 ID
+	private String fileName; //첨부파일이름
 
 	public int getRnum() {
 		return rnum;

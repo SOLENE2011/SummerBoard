@@ -29,6 +29,7 @@
 <div class="wrapper">
 	<h3>새 글 쓰기</h3>
 	<form action="write.do" method="post" onsubmit="return writeFormCheck()" enctype="multipart/form-data">
+	<!-- enctype : <input type="file">을 위한. 폼에있는 데이터를 어떻게 Encoding해서 서버에 보낼지 -->
 	<table class="boardWrite">
 		<tr>
 			<th><label for="subject">제목</label></th>
@@ -36,6 +37,7 @@
 				<input type="text" id="subject" name="subject" class="boardSubject" />
 				<input type="hidden" id="writer" name="writer" value="${userName}" />
 				<input type="hidden" id = "writerId" name="writerId" value="${userId}" />
+				<!-- LoginController에서 session에 userName과 userId를 올려놨기 때문에 쓸 수 있음! -->
 			</td>
 		</tr>
 		<tr>

@@ -2,11 +2,11 @@ package net.nice19.smboard.member.model;
 
 public class MemberModel {
 
-	private int idx;
-	private String userId;
-	private String userPw;
-	private String userName;
-	private String joinDate;
+	private int idx; // SEQ
+	private String userId; // ID
+	private String userPw; // PW
+	private String userName; // 회원이름
+	private String joinDate; //가입날짜
 
 	public int getIdx() {
 		return idx;

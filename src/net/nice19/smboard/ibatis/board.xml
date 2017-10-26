@@ -68,7 +68,9 @@
 	</select>
 	
 	<select id="getSearchTotalNum" resultClass="int">
-		select count(idx) from jmboard where $type$ like '%$keyword$%'
+		select count(idx) 
+		from jmboard 
+		where $type$ like '%$keyword$%'
 	</select>
 	
 	<select id="searchArticle" parameterClass="java.util.HashMap" resultClass="BoardModel">
@@ -99,27 +101,19 @@
 	</select>
 	
 	<select id="getOneArticle" parameterClass="int" resultClass="BoardModel">
-		select 
-			idx, writer, subject, content, 
-			hitcount, recommendcount, writedate, 
-			writerId, fileName 
+		select idx, writer, subject, content, hitcount, recommendcount, writedate, writerId, fileName 
 		from jmboard 
 		where idx = #idx# 
 	</select>
 	
 	<select id="getCommentList" parameterClass="int" resultClass="BoardCommentModel">
-		select 
-			idx, writer, content, 
-			writeDate, linkedArticleNum, writerId 
-		from jmboard_comment 
+		select idx, writer, content, writeDate, linkedArticleNum, writerId from jmboard_comment 
 		where linkedArticleNum = #idx# 
 		order by idx desc
 	</select>
 	
 	<select id="getOneComment" parameterClass="int" resultClass="BoardCommentModel">
-		select 
-			idx, writer, content, writeDate, 
-			linkedArticleNum, writerId 
+		select idx, writer, content, writeDate, linkedArticleNum, writerId 
 		from jmboard_comment 
 		where idx = #idx#
 	</select>
@@ -160,9 +154,7 @@
 	
 	<update id="modifyArticle" parameterClass="BoardModel">
 		update jmboard 
-		set subject = #subject#, 
-				content = #content#, 
-				fileName = #fileName#
-			where idx = #idx#
+		set subject = #subject#, content = #content#, fileName = #fileName#
+		where idx = #idx#
 	</update>
 </sqlMap>
