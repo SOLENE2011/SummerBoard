@@ -17,7 +17,9 @@ public class BoardService implements BoardDao {
 	public void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
 		this.sqlMapClientTemplate = sqlMapClientTemplate;
 	}
-
+	// 여기까진 모든 service가 동일한 내용임
+	
+	
 	@Override
 	public List<BoardModel> getBoardList(int startArticleNum, int endArticleNum) {
 		// TODO Auto-generated method stub
@@ -38,8 +40,9 @@ public class BoardService implements BoardDao {
 		// TODO Auto-generated method stub
 		valueMap.put("type", type);
 		valueMap.put("keyword", keyword);
-		valueMap.put("srartArticleNum", startArticleNum);
+		valueMap.put("startArticleNum", startArticleNum);
 		valueMap.put("endArticleNum", endArticleNum);
+		System.out.println(valueMap.size());
 		return sqlMapClientTemplate.queryForList("board.searchArticle", valueMap);
 	}
 

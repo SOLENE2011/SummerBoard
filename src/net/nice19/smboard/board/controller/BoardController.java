@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -27,6 +28,8 @@ public class BoardController {
 
 	//DI
 	private ApplicationContext context = new ClassPathXmlApplicationContext("/config/applicationContext.xml");
+	//service를 갖다 쓰기 위해 context 생성함. 컨테이너 객체 만들고
+	//서비스를 객체생성해서 가져온당.
 	private BoardService boardService = (BoardService) context.getBean("boardService");
 	
 	
@@ -34,6 +37,7 @@ public class BoardController {
 	// article, page variables
 	private int currentPage=1;
 	private int showArticleLimit = 10;
+	// 한페이지에 보여줄 게시글
 	// change value if want to show more articles by one page
 	private int showPageLimit = 10;
 	// change value if want to show more page links
@@ -45,13 +49,14 @@ public class BoardController {
 	
 	private String uploadPath = "C:\\Java\\App\\SummerBoard\\WebContent\\files\\";
 
+	// 게시판 리스트 띄우기!!!
 	@RequestMapping("/list.do")
 	public ModelAndView boardList(HttpServletRequest request, HttpServletResponse response) {
 		
 		String type = null;
 		String keyword = null;
 		
-		// set variables from request parameter
+		// set variables from request parameter request parameter의 세부 설정.
 		if(request.getParameter("page") == null || request.getParameter("page").trim().isEmpty() || 
 					request.getParameter("page").equals("0")) {
 				currentPage = 1;
@@ -60,18 +65,25 @@ public class BoardController {
 		}
 		
 		if(request.getParameter("type") != null) {
-			type = request.getParameter("keyword").trim();
+			type = request.getParameter("type").trim();
+		}
+		
+		if(request.getParameter("keyword") != null) {
+			keyword = request.getParameter("keyword").trim();
 		}
 		
 		// expression article variables value	
 		startArticleNum = (currentPage - 1) * showArticleLimit +1;
 		endArticleNum = startArticleNum + showArticleLimit-1;
 		
+
 		// get boardList and get page html code
 		List<BoardModel> boardList;
-		if(type != null && keyword !=null) {
+		if(type != null && keyword != null) {
 			boardList = boardService.searchArticle(type, keyword, startArticleNum, endArticleNum);
 			totalNum = boardService.getSearchTotalNum(type, keyword);
+			// 검색 결과가 boardList에 들어가는거
+			// 총 숫자를 구하는 이유는 아래 pageHtml에서 사용하기 위해서임! paging을 위해!!!
 		} else {
 			boardList = boardService.getBoardList(startArticleNum, endArticleNum);
 			totalNum = boardService.getTotalNum();
@@ -156,10 +168,12 @@ public class BoardController {
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		BoardModel board = boardService.getOneArticle(idx);
 		// get selected article model
+		// 1.한줄 짜리 데이터를 가져와야함
 		boardService.updateHitcount(board.getHitcount()+1, idx);
 		// update hitcount
+		// 2.그리고 조회수 1을 증가시켜야함.
 		List<BoardCommentModel> commentList = boardService.getCommentList(idx);
-		// get comment list
+		// get comment list 댓글 리스트도 뽑아옴
 		
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("board", board);
@@ -167,6 +181,11 @@ public class BoardController {
 		mav.setViewName("/board/view");
 		return mav;
 		
+	}
+	
+	@RequestMapping("/write.do")
+	public String boardWrite(@ModelAttribute("BoardModel") BoardModel boardModel) {
+		return "/board/write";
 	}
 	
 	@RequestMapping(value="/write.do", method = RequestMethod.POST)
@@ -189,7 +208,7 @@ public class BoardController {
 		
 		boardModel.setFileName(fileName);
 		
-		// new line code change to <br /> tag
+		// new line code change to <br /> tag 줄 바꿈 적용!
 		String content = boardModel.getContent().replaceAll("\r\n", "<br />");
 		boardModel.setContent(content);
 		
@@ -198,4 +217,161 @@ public class BoardController {
 		return "redirect:list.do";
 	}
 	
+	@RequestMapping("/commentWrite.do")
+	public ModelAndView commentWriteProc(@ModelAttribute("CommentModel") BoardCommentModel commentModel) {
+		
+		// new line code change to <br /> tag
+		String content = commentModel.getContent().replaceAll("\r\n", "<br />");
+		commentModel.setContent(content);
+		
+		boardService.writeComment(commentModel);
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("idx", commentModel.getLinkedArticleNum());
+		mav.setViewName("redirect:view.do");;
+		// 입력이 된 다음에 바로 view.jsp 보여줌
+		return mav;
+	}
+
+	@RequestMapping("/modify.do")
+	public ModelAndView boardModify(HttpServletRequest request, HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		
+		BoardModel board = boardService.getOneArticle(idx);
+		// <br /> tag change to new line code
+		String content = board.getContent().replaceAll("<br />", "\r\n");
+		board.setContent(content);
+		
+		ModelAndView mav = new ModelAndView();
+		
+		if(!userId.equals(board.getWriterId())) {
+			mav.addObject("errCode", "1");
+			mav.addObject("idx", idx);
+			mav.setViewName("redirect:view.do");
+		} else {
+			mav.addObject("board", board);
+			mav.setViewName("/board/modify");
+		}
+		
+		return mav;
+	}
+	
+	@RequestMapping(value = "/modify.do", method = RequestMethod.POST)
+	public ModelAndView boardModifyProc(@ModelAttribute("BoardModel") BoardModel boardModel, MultipartHttpServletRequest request) {
+		String orgFileName = request.getParameter("orgFile");
+		MultipartFile newFile = request.getFile("newFile");
+		String newFileName = newFile.getOriginalFilename();
+		
+		boardModel.setFileName(orgFileName);
+		
+		// if: when want to change upload file
+		if(newFile != null && !newFileName.equals("")) {
+			if(orgFileName != null || !orgFileName.equals("")) {
+			// remove uploaded file
+			File removeFile = new File(uploadPath + orgFileName);
+			removeFile.delete();
+		}
+		
+		// create new upload file
+		File newUploadFile = new File(uploadPath + newFileName);
+		
+		try {
+			newFile.transferTo(newUploadFile);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		boardModel.setFileName(newFileName);
+	}
+		
+		// new line code change to <br /> tag
+		String content = boardModel.getContent().replaceAll("\r\n", "<br />");
+		boardModel.setContent(content);
+		
+		boardService.modifyArticle(boardModel);
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("idx", boardModel.getIdx());
+		mav.setViewName("redirect:/board/view.do");
+		return mav;
+	}
+	
+	@RequestMapping("delete.do")
+	public ModelAndView boardDelete(HttpServletRequest request, HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		
+		BoardModel board = boardService.getOneArticle(idx);
+		
+		ModelAndView mav = new ModelAndView();
+		
+		if(!userId.equals(board.getWriterId())) {
+			mav.addObject("errCode", "1");
+			mav.addObject("idx", idx);
+			mav.setViewName("redirect:view.do");
+		} else {
+			List<BoardCommentModel> commentList = boardService.getCommentList(idx);
+			// check comments
+			if(commentList.size() > 0) {
+				mav.addObject("errCode", "2");
+				// can't delete because a article has comments
+				mav.addObject("idx", idx);
+				mav.setViewName("redirect:view.do");
+			} else {
+				// if: when the article has upload file - remove that
+				if(board.getFileName() != null) {
+					File removeFile = new File(uploadPath + board.getFileName());
+					removeFile.delete();
+				}
+				
+				boardService.deleteArticle(idx);
+				
+				mav.setViewName("redirect:list.do");
+				
+			}
+		}
+		return mav;
+	}
+	
+	@RequestMapping("/commentDelete.do")
+	public ModelAndView commendDelete(HttpServletRequest request, HttpSession session) {
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		int linkedArticleNum = Integer.parseInt(request.getParameter("linkedArticleNum"));
+		
+		String userId = (String) session.getAttribute("userId");
+		BoardCommentModel comment = boardService.getOneComment(idx);
+		
+		ModelAndView mav = new ModelAndView();
+		
+		if(!userId.equals(comment.getWriterId())) {
+			mav.addObject("errCode", "1");
+		} else {
+			boardService.deleteComment(idx);
+		}
+		
+		mav.addObject("idx", linkedArticleNum);
+		// move back to the article
+		mav.setViewName("redirect:view.do");
+		
+		return mav;
+	}
+	
+	@RequestMapping("/recommend.do")
+	public ModelAndView updateRecommendcount(HttpServletRequest request, HttpSession session) {
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		String userId = (String) session.getAttribute("userId");
+		BoardModel board = boardService.getOneArticle(idx);
+		
+		ModelAndView mav = new ModelAndView();
+		
+		if(userId.equals(board.getWriterId())) {
+			mav.addObject("errCode", "1");
+		} else {
+			boardService.updateRecommendCount(board.getRecommendcount()+1, idx);
+		}
+		mav.addObject("idx", idx);
+		mav.setViewName("redirect:/board/view.do");
+		
+		return mav;
+	}
 }

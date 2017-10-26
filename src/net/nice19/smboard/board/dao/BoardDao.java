@@ -5,6 +5,9 @@ import java.util.List;
 import net.nice19.smboard.board.model.BoardCommentModel;
 import net.nice19.smboard.board.model.BoardModel;
 
+
+// DB와 관련된. DB에서 꺼내오는.
+// interface로 outline 잡아놈
 public interface BoardDao {
 
 	// get all contents in JMBoard table

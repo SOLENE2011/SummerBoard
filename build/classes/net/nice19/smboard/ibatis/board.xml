@@ -110,7 +110,7 @@
 	<select id="getCommentList" parameterClass="int" resultClass="BoardCommentModel">
 		select 
 			idx, writer, content, 
-			writeDate, linkedArticleNum, writerid, 
+			writeDate, linkedArticleNum, writerId 
 		from jmboard_comment 
 		where linkedArticleNum = #idx# 
 		order by idx desc

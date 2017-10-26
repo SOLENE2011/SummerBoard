@@ -44,8 +44,8 @@
        		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
        	</bean>
        	
-       <!-- 	<bean id="boardService" class="net.nice19.smboard.board.service.BoardService">
+       	<bean id="boardService" class="net.nice19.smboard.board.service.BoardService">
        		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
-       	</bean> -->
+       	</bean>
   
   </beans>
