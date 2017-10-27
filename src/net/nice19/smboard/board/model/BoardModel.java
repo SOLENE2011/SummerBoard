@@ -3,6 +3,10 @@ package net.nice19.smboard.board.model;
 public class BoardModel {
 
 	private int rnum; // 조건에맞는
+	// SQL문에서 rownum 쿼리(가상 컬럼)를 이용해 rnum이라는 행을 추가한 후
+	// 서브쿼리 결과에 번호를 부여해 재정렬하기 위해 사용함
+	// DB는 추가할 필요 없지만 SQL문(sql.xml)에서 정렬한것을 
+	// Model에 넣기위해 int rnum을 만듬
 	private int idx; //SEQ.
 	private String writer; //글쓴이
 	private String subject; //제목

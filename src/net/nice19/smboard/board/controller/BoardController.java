@@ -49,7 +49,7 @@ public class BoardController {
 	
 	private String uploadPath = "C:\\Java\\App\\SummerBoard\\WebContent\\files\\";
 
-	// 게시판 리스트 띄우기!!!
+	// 게시판 리스트 띄우기!!! + 페이징
 	@RequestMapping("/list.do")
 	public ModelAndView boardList(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -99,6 +99,7 @@ public class BoardController {
 		return mav;
 	}
 	
+
 	private StringBuffer getPageHtml(int currentPage, int totalNum, int showArticleLimit, int showPageLimit, String type, String keyword) {
 		StringBuffer pageHtml = new StringBuffer();
 		int startPage = 0;
@@ -163,6 +164,7 @@ public class BoardController {
 		return pageHtml;
 	}
 	
+	// 글 보여주기 VIEW!
 	@RequestMapping("/view.do")
 	public ModelAndView boardView(HttpServletRequest request) {
 		int idx = Integer.parseInt(request.getParameter("idx"));
@@ -181,23 +183,34 @@ public class BoardController {
 		
 	}
 	
+	// 글 쓰기 FORM!
 	@RequestMapping("/write.do")
 	public String boardWrite(@ModelAttribute("BoardModel") BoardModel boardModel) {
 		return "/board/write";
+		// 컨트롤러의 처리 결과(메서드 실행)를 생성할 뷰를 결정하는 건 Resolver
+		// 그래서 /WEB-INF/view/ return값.jsp 로 찾아감
+		// <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		// <property name="prefix" value="/WEB-INF/view/" />
+		// <property name="suffix" value=".jsp" />
+		// </bean>
 	}
 	
+	// 글 쓰기 작업!
 	@RequestMapping(value="/write.do", method = RequestMethod.POST)
 	public String boardWriteProc(@ModelAttribute("BoardModel") BoardModel boardModel, MultipartHttpServletRequest request) {
 		// get upload file
 		MultipartFile file = request.getFile("file");
 		String fileName = file.getOriginalFilename();
 		File uploadFile = new File(uploadPath + fileName);
+		// 
 		//private String uploadPath = "C:\\Java\\App\\SummerBoard\\WebContent\\files\\";
 		
 		// 같은 이름의 파일이 존재할때!
 		if(uploadFile.exists()) {
 			fileName = new Date().getTime() + fileName;
 			uploadFile = new File(uploadPath + fileName);
+								// new File : java.io.File.File(String pathname)
+								// 경로를 지정하기 위해 파일이라는 객체 생성
 		}
 		
 		try {
@@ -211,19 +224,22 @@ public class BoardController {
 		
 		boardModel.setFileName(fileName);
 		
-		// new line code change to <br /> tag 줄 바꿈 적용!
+		// enter를 <br />로 대체해서 jsp에서 enter 친대로 데이터가 보이도록 함.
 		String content = boardModel.getContent().replaceAll("\r\n", "<br />");
 		boardModel.setContent(content);
 		
 		boardService.writeArticle(boardModel);
 		
 		return "redirect:list.do";
+		// redirect: 기존의 정보를 가져가지않음
+		// viewResolver로 가지 않고 브라우저로 감
 	}
 	
+	// 댓글 달기 작업!
 	@RequestMapping("/commentWrite.do")
 	public ModelAndView commentWriteProc(@ModelAttribute("CommentModel") BoardCommentModel commentModel) {
 		
-		// new line code change to <br /> tag
+		
 		String content = commentModel.getContent().replaceAll("\r\n", "<br />");
 		commentModel.setContent(content);
 		
@@ -235,6 +251,7 @@ public class BoardController {
 		return mav;
 	}
 
+	// 글 수정 폼!
 	@RequestMapping("/modify.do")
 	public ModelAndView boardModify(HttpServletRequest request, HttpSession session) {
 		// 남이 내꺼를 수정하면 안돼니깐 HttpSession session으로 본인 여부 확인
@@ -242,13 +259,14 @@ public class BoardController {
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		
 		BoardModel board = boardService.getOneArticle(idx);
-		// <br /> tag change to new line code
 		String content = board.getContent().replaceAll("<br />", "\r\n");
 		board.setContent(content);
 		
 		ModelAndView mav = new ModelAndView();
 		
 		if(!userId.equals(board.getWriterId())) {
+			// ID가 일치하지 않는다면 view.jsp로 가서 
+			//case 1: alert("잘못된 접근 경로입니다!"); 에러창이 출력됨.
 			mav.addObject("errCode", "1");
 			mav.addObject("idx", idx);
 			mav.setViewName("redirect:view.do");
@@ -260,6 +278,7 @@ public class BoardController {
 		return mav;
 	}
 	
+	// 글 수정	작업!
 	@RequestMapping(value = "/modify.do", method = RequestMethod.POST)
 	public ModelAndView boardModifyProc(@ModelAttribute("BoardModel") BoardModel boardModel, MultipartHttpServletRequest request) {
 		String orgFileName = request.getParameter("orgFile");
@@ -268,15 +287,17 @@ public class BoardController {
 		
 		boardModel.setFileName(orgFileName);
 		
-		// if: when want to change upload file
+		// 사진 변경을 원할 때
 		if(newFile != null && !newFileName.equals("")) {
 			if(orgFileName != null || !orgFileName.equals("")) {
-			// remove uploaded file
+			// 처음올린 파일을 삭제한다.
 			File removeFile = new File(uploadPath + orgFileName);
+										// java.io.File.File(String pathname)
+										// 파일 경로를 지정하기 위해 객체를 생성합니당.
 			removeFile.delete();
 		}
 		
-		// create new upload file
+		// 새로 생성한 파일에 다시 newFile을 저장시킨다.
 		File newUploadFile = new File(uploadPath + newFileName);
 		
 		try {
@@ -288,7 +309,6 @@ public class BoardController {
 		boardModel.setFileName(newFileName);
 	}
 		
-		// new line code change to <br /> tag
 		String content = boardModel.getContent().replaceAll("\r\n", "<br />");
 		boardModel.setContent(content);
 		
@@ -300,6 +320,7 @@ public class BoardController {
 		return mav;
 	}
 	
+	// 글 삭제 작업!
 	@RequestMapping("delete.do")
 	public ModelAndView boardDelete(HttpServletRequest request, HttpSession session) {
 		// 남이 내꺼를 삭제하면 안돼니깐 HttpSession session으로 본인 여부 확인
@@ -319,11 +340,15 @@ public class BoardController {
 			// check comments
 			if(commentList.size() > 0) {
 				mav.addObject("errCode", "2");
-				// can't delete because a article has comments
 				mav.addObject("idx", idx);
 				mav.setViewName("redirect:view.do");
+				// switch(errCode)
+				//	case 2:
+				// alert("댓글이 있어 글을 삭제하실 수 없습니다!");
+				// 댓글이 있으면 삭제하지 못하도록 함.
 			} else {
-				// if: when the article has upload file - remove that
+				// C:\Java\App\SummerBoard\WebContent\files
+				// Eclipse에 업로드된 파일까지 삭제하기 위한 작업임.
 				if(board.getFileName() != null) {
 					File removeFile = new File(uploadPath + board.getFileName());
 					removeFile.delete();
@@ -338,6 +363,7 @@ public class BoardController {
 		return mav;
 	}
 	
+	// 댓글 삭제 작업
 	@RequestMapping("/commentDelete.do")
 	public ModelAndView commendDelete(HttpServletRequest request, HttpSession session) {
 		// 남이 내꺼를 수정하면 안돼니깐 HttpSession session으로 본인 여부 확인
@@ -351,6 +377,7 @@ public class BoardController {
 		
 		if(!userId.equals(comment.getWriterId())) {
 			mav.addObject("errCode", "1");
+			// case 1: alert("잘못된 접근 경로입니다!");
 		} else {
 			boardService.deleteComment(idx);
 		}
@@ -362,9 +389,10 @@ public class BoardController {
 		return mav;
 	}
 	
+	// 추천하기!
 	@RequestMapping("/recommend.do")
 	public ModelAndView updateRecommendcount(HttpServletRequest request, HttpSession session) {
-		// 본인은 본인의 글을 추천하지 못하게 하기 위해 session 검
+		// 본인은 본인의 글을 추천하지 못하게 하기 위해 session 함께.
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		String userId = (String) session.getAttribute("userId");
 		BoardModel board = boardService.getOneArticle(idx);
@@ -373,8 +401,10 @@ public class BoardController {
 		
 		if(userId.equals(board.getWriterId())) {
 			mav.addObject("errCode", "1");
+			// 본인은 본인 글을 추천할 수 없도록 설정함.
 		} else {
 			boardService.updateRecommendCount(board.getRecommendcount()+1, idx);
+			// 본인이 아니면 추천수 1 증가
 		}
 		mav.addObject("idx", idx);
 		mav.setViewName("redirect:/board/view.do");

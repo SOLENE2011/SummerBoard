@@ -2,12 +2,12 @@ package net.nice19.smboard.board.model;
 
 public class BoardCommentModel {
 
-	private int idx; //SEQ.
-	private String writer; //아이디
-	private String content; //내용
-	private String writeDate; //날짜
-	private int linkedArticleNum; //해당글번호
-	private String writerId; 
+	private int idx; // SEQ.
+	private String writer; // 글쓴이
+	private String content; // 내용
+	private String writeDate; // 날짜
+	private int linkedArticleNum; // 해당글번호
+	private String writerId;  // 글쓴이ID
 
 	public int getIdx() {
 		return idx;
