@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--DispatcherServlet은 WEB-INF/ 디렉터리에 위치한 [Servlet이름]-servlet.xml 파일을 SPRING 설정 파일로 사용한다. -->
+
 <!-- 전반에 대한 설정 -->
 <!-- applicationContext.xml db설정-->
 
@@ -11,17 +13,9 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <!-- controllers -->
-   		<bean id="loginController" 
-   			class="net.nice19.smboard.login.controller.LoginController" />
-   			
-   		<bean id="memberController" 
-   			class="net.nice19.smboard.member.controller.MemberController" />
-  			
-   		<bean id="boardController" 
-   			class="net.nice19.smboard.board.controller.BoardController" />
-
     <!-- viewResolver -->
+	<!--  DispacherServlet은 이 뷰 이름과 매칭되는 뷰 구현체를 찾기 위해 ViewResolver를 사용  -->
+	<!-- 컨트롤러의 처리 결과를 생성할 뷰를 결정한다. (결정자 : Resolver) -->
     	<bean id="viewResolver" 
     		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
@@ -29,9 +23,8 @@
     			<property name="suffix" value=".jsp" />
     	</bean>
 
-    <!-- validation massage -->
-    	<bean id="messageSource" 
-    		class="org.springframework.context.support.ResourceBundleMessageSource">
+    	<!-- validation massage -->
+    	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
     		<property name="basenames">
     			<list>
     				<value>config.validation</value>
@@ -40,18 +33,32 @@
     	</bean>
     	
     	<!-- interceptor -->
-    	<bean id="multipartResolver" 
-    		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-    	</bean>   
-    	
+    	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
     	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
     		<property name="interceptors">
     			<list>
     				<ref bean="sessionInterceptor" />
     			</list>
     		</property>
-    	</bean>	
+    	</bean>
     	
     	<bean id="sessionInterceptor" class="net.nice19.smboard.interceptor.SessionInterceptor" />
+    	
+    	
+    	 <!-- controllers 정의-->
+   		<bean id="loginController" class="net.nice19.smboard.login.controller.LoginController" />
+   		
+   		<bean id="memberController" class="net.nice19.smboard.member.controller.MemberController" />
+  			
+   		<bean id="boardController" class="net.nice19.smboard.board.controller.BoardController" />
+   		
+   	<!-- 
+		컨트롤러 Class 자동 스캔	
+		<context:component-scan base-package="madvirus.spring.chap06.controller" /> 
+		@Controller Annotation은 @Component Annotation과 마찬가지로 컴포넌트 스캔 대상이다. 
+		따라서 <context:component-scan>
+		태그를 이용해서 @Controller Annotation이 적용된 컨트롤러 Class를 자동으로 로딩할 수 있다.
+		이걸 쓰면 아래 <bean id=""> 이런걸 하나하나 설정하지 않아도 된다.
+	-->
     	
 </beans>

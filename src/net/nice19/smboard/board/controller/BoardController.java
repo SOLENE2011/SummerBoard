@@ -187,6 +187,7 @@ public class BoardController {
 	@RequestMapping("/write.do")
 	public String boardWrite(@ModelAttribute("BoardModel") BoardModel boardModel) {
 		return "/board/write";
+		//  String 타입을 리턴할 경우, 문자열 값이 뷰 이름으로 사용된다
 		// 컨트롤러의 처리 결과(메서드 실행)를 생성할 뷰를 결정하는 건 Resolver
 		// 그래서 /WEB-INF/view/ return값.jsp 로 찾아감
 		// <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -233,6 +234,8 @@ public class BoardController {
 		return "redirect:list.do";
 		// redirect: 기존의 정보를 가져가지않음
 		// viewResolver로 가지 않고 브라우저로 감
+        //	redirect:/bbs/list - 현재 Servlet 컨텍스트에 대한 상대적인 경로로 리다이렉트
+        // redirect:http://host/bbs/list - 지정한 절대 URL로 리다이렉트
 	}
 	
 	// 댓글 달기 작업!
