@@ -11,10 +11,16 @@ public class MemberValidatior implements Validator {
 	public boolean supports(Class<?> clazz) {
 		// TODO Auto-generated method stub
 		return MemberModel.class.isAssignableFrom(clazz);
+		// MemberModel class의 유효성 검사
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
+		
+		// error가 dispatcher-servlet에 있는
+		// <!-- validation massage -->
+		// <value>config.validation</value> 와 연결됨
+		
 		// TODO Auto-generated method stub
 		MemberModel memberModel = (MemberModel) target;
 

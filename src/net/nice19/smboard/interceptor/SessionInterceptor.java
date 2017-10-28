@@ -16,7 +16,8 @@ public boolean preHandle(HttpServletRequest request, HttpServletResponse respons
 	// check variable
 	Object userId = request.getSession().getAttribute("userId");
 	
-	// pass through when access login.do, join.do
+	// 로그인이 되어있는데 login.do 나 join.do로 요청이 들어온다면
+	// list.do로 Redirect 시킴 true.
 	if(request.getRequestURI().equals("/SummerBoard/login.do") || 
 				request.getRequestURI().equals("/SummerBoard/member/join.do")) {
 			if(userId != null) {
@@ -27,10 +28,12 @@ public boolean preHandle(HttpServletRequest request, HttpServletResponse respons
 			}
 	}
 	
-	// where other pages
+	// 로그인을 하지 않았으면 무조건 login do로 보냄. intercepter 후 요청 컨트롤러로 가지 않음 false
 			if(userId == null) {
 				response.sendRedirect(request.getContextPath() + "/login.do");
 				return false;
+				// false 무효
+				// return false면 controller로 요청이 가지 않는다.
 			} else {
 				return true;
 			}
@@ -42,7 +45,7 @@ public boolean preHandle(HttpServletRequest request, HttpServletResponse respons
 public void postHandle(HttpServletRequest request, 
 		HttpServletResponse response, Object handler, 
 		ModelAndView modelAndView) throws Exception {
-	
+		System.out.println("Test");
 }
 
 }
