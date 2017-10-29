@@ -94,6 +94,9 @@ public class BoardController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("boardList", boardList);
 		mav.addObject("pageHtml", pageHtml);
+		// Map에 저장된 <키,값> 쌍 전체를 뷰에 전달할 값으로 ModelAndView 객체에 추가하고 싶다면
+		// Map referenceMap = referenceData();
+		// 	mav.addAllObjects(referenceMap);
 		mav.setViewName("/board/list");
 		
 		return mav;

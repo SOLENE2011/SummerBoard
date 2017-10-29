@@ -41,7 +41,7 @@
 
 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
-		<url-pattern>*.do</url-pattern>
+		<url-pattern>*.do</url-pattern><!--서블릿 경로 -->
 	</servlet-mapping>
 
 </web-app>
