@@ -31,6 +31,7 @@
     	</bean>
 
     	<!-- validation massage -->
+    	<!-- DefaultMessageCodesResolver는 MessageSource로부터 에러 Code에 해당하는 Message를 로딩 -->
     	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
     		<property name="basenames">
     			<list>

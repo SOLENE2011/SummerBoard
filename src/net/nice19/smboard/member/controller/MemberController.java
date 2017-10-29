@@ -29,6 +29,8 @@ public class MemberController {
 		// BindingResult 의 경우 ModelAttribute 을 이용해 
 		// 매개변수를 Bean 에 binding 할 때 
 		// 발생한 오류 정보를 받기 위해 선언해야 하는 annotation
+		// 폼 값을 커맨드 객체에 바인딩(binding)한 결과를 저장하고 
+		// 에러 Code로부터 에러 Message를 가져온다
 		ModelAndView mav = new ModelAndView();
 		new MemberValidatior().validate(memberModel, result);
 		if (result.hasErrors()) {
