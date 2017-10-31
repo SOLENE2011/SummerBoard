@@ -202,8 +202,11 @@ public class BoardController {
 	// 글 쓰기 작업!
 	@RequestMapping(value="/write.do", method = RequestMethod.POST)
 	public String boardWriteProc(@ModelAttribute("BoardModel") BoardModel boardModel, MultipartHttpServletRequest request) {
+		// Multipart 요청이 들어올 때 내부적으로 원본 HttpServletRequest 대신 사용되는 Interface이다
+		
 		// get upload file
 		MultipartFile file = request.getFile("file");
+		// MultipartFile이 제공하는 메서드를 이용해서 업로드 데이터 접근
 		String fileName = file.getOriginalFilename();
 		File uploadFile = new File(uploadPath + fileName);
 		// 

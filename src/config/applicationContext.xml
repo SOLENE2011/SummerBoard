@@ -29,8 +29,7 @@
     	</bean>
     	
     	<!-- 이 객체를 얻어내고 ibatis의 정의 한 내용을 끌어다 작업할 수 있다. -->
-    	<bean id="sqlMapClientTemplate" 
-    		class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+    	<bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
     		<property name="sqlMapClient" ref="sqlMapClient" />	
     	</bean>
     	

@@ -30,6 +30,7 @@
 	<h3>새 글 쓰기</h3>
 	<form action="write.do" method="post" onsubmit="return writeFormCheck()" enctype="multipart/form-data">
 	<!-- enctype : <input type="file">을 위한. 폼에있는 데이터를 어떻게 Encoding해서 서버에 보낼지 -->
+	<!-- 파일 업로드가 필요한 경우 HTML 폼의 속성을 "multipart/form-data"로 설정 -->
 	<!-- 	@RequestMapping(value="/write.do", method = RequestMethod.POST) -->
 	<table class="boardWrite">
 		<tr>
