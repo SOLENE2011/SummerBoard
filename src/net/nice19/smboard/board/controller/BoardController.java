@@ -222,9 +222,10 @@ public class BoardController {
 		
 		try {
 			file.transferTo(uploadFile);
-			 // jsp에서 업로드한 file의 데이터를
-			 // "C:\\Java\\App\\SummerBoard\\WebContent\\files\\fileName" 경로에
-			 // 생성한 uploadFile에 파일 데이터를 저장한다
+			// 업로드 한 파일 데이터를 특정 파일로 저장하고 싶을때  MultipartFile.transferTo() 메서드 사용 
+			// jsp에서 업로드한 file의 데이터를
+			// "C:\\Java\\App\\SummerBoard\\WebContent\\files\\fileName" 경로에
+			// 생성한 uploadFile에 파일 데이터를 저장한다
 		} catch (Exception e) {
 			
 		}
