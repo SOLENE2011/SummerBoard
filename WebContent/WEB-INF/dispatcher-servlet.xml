@@ -52,6 +52,7 @@
     	
     	<!-- 게시판 파일 올리기 Commons FileUpload API를 이용해서 Multipart를 처리해 준다. -->
     	<!-- <form action="write.do" method="post" onsubmit="return writeFormCheck()" enctype="multipart/form-data"> -->
+    	<!-- bean id는 바꾸면 안됨 인식못함 -->
     	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
     	
     	 <!-- controllers 정의-->
